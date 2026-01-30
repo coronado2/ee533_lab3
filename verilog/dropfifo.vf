@@ -1,0 +1,231 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2008 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1
+//  \   \         Application : sch2verilog
+//  /   /         Filename : dropfifo.vf
+// /___/   /\     Timestamp : 01/30/2026 01:11:24
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: C:\Xilinx\10.1\ISE\bin\nt\unwrapped\sch2verilog.exe -intstyle ise -family spartan3a -w "C:/Documents and Settings/student/Desktop/ee533_lab3/IDS/dropfifo.sch" dropfifo.vf
+//Design Name: dropfifo
+//Device: spartan3a
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 100 ps / 10 ps
+
+module FD8CE_HXILINX_dropfifo(Q, C, CE, CLR, D);
+
+   
+   output [7:0]       Q;
+
+   input 	      C;	
+   input 	      CE;	
+   input 	      CLR;	
+   input  [7:0]       D;
+   
+   reg    [7:0]       Q;
+   
+   always @(posedge C or posedge CLR)
+     begin
+	if (CLR)
+	  Q <= 8'b0000_0000;
+	else if (CE)
+          Q <= D;
+     end
+   
+   
+endmodule
+`timescale  100 ps / 10 ps
+
+module COMP8_HXILINX_dropfifo (EQ, A, B);
+    
+
+   output EQ;
+
+   input  [7:0] A;
+   input  [7:0] B;
+
+   assign EQ = (A==B) ;
+
+endmodule
+`timescale 100 ps / 10 ps
+
+module CB8CLE_HXILINX_dropfifo(CEO, Q, TC, C, CE, CLR, D, L);
+   
+   parameter TERMINAL_COUNT = 8'b1111_1111;
+   
+   output             CEO;
+   output [7:0]       Q;
+   output             TC;
+
+   input 	      C;	
+   input 	      CE;	
+   input 	      CLR;	
+   input  [7:0]       D;
+   input              L;
+   
+   reg    [7:0]       Q;
+   
+   always @(posedge C or posedge CLR)
+     begin
+	if (CLR)
+	  Q <= 8'b0000_0000;
+        else if (L)
+          Q <= D;
+	else if (CE)
+	  Q <= Q + 1;
+     end
+   
+   assign CEO = TC & CE;
+   assign TC = Q == TERMINAL_COUNT;
+   
+endmodule
+`timescale 100 ps / 10 ps
+
+module CB8CE_HXILINX_dropfifo(CEO, Q, TC, C, CE, CLR);
+   
+   parameter TERMINAL_COUNT = 8'b1111_1111;
+   
+   output             CEO;
+   output [7:0]       Q;
+   output             TC;
+
+   input 	      C;	
+   input 	      CE;	
+   input 	      CLR;	
+   
+   reg   [7:0]        Q;
+   
+   always @(posedge C or posedge CLR)
+     begin
+	if (CLR)
+	  Q <= 8'b0000_0000;
+	else if (CE)
+	  Q <= Q + 1;
+     end
+   
+   assign CEO = TC & CE;
+   assign TC = Q == TERMINAL_COUNT;
+   
+endmodule
+`timescale 1ns / 1ps
+
+module dropfifo(clk, 
+                drop_pkt, 
+                fiforead, 
+                fifowrite, 
+                firstword, 
+                in_fifo, 
+                lastword, 
+                rst, 
+                out_fifo, 
+                valid_data);
+
+    input clk;
+    input drop_pkt;
+    input fiforead;
+    input fifowrite;
+    input firstword;
+    input [71:0] in_fifo;
+    input lastword;
+    input rst;
+   output [71:0] out_fifo;
+   output valid_data;
+   
+   wire [71:0] in_fifo0;
+   wire [7:0] raddr;
+   wire [7:0] waddr;
+   wire [7:0] XLXN_19;
+   wire XLXN_33;
+   wire XLXN_34;
+   wire XLXN_38;
+   wire XLXN_41;
+   wire XLXN_42;
+   wire XLXN_43;
+   wire XLXN_44;
+   wire XLXN_49;
+   wire XLXN_50;
+   wire XLXN_60;
+   
+   CB8CE_HXILINX_dropfifo XLXI_1 (.C(clk), 
+                                  .CE(XLXN_38), 
+                                  .CLR(rst), 
+                                  .CEO(), 
+                                  .Q(raddr[7:0]), 
+                                  .TC());
+   // synthesis attribute HU_SET of XLXI_1 is "XLXI_1_4"
+   CB8CLE_HXILINX_dropfifo XLXI_2 (.C(clk), 
+                                   .CE(XLXN_50), 
+                                   .CLR(rst), 
+                                   .D(XLXN_19[7:0]), 
+                                   .L(XLXN_49), 
+                                   .CEO(), 
+                                   .Q(waddr[7:0]), 
+                                   .TC());
+   // synthesis attribute HU_SET of XLXI_2 is "XLXI_2_3"
+   reg9B XLXI_3 (.ce(XLXN_60), 
+                 .clk(clk), 
+                 .clr(rst), 
+                 .d(in_fifo[71:0]), 
+                 .q(in_fifo0[71:0]));
+   FD8CE_HXILINX_dropfifo XLXI_4 (.C(clk), 
+                                  .CE(XLXN_44), 
+                                  .CLR(rst), 
+                                  .D(waddr[7:0]), 
+                                  .Q(XLXN_19[7:0]));
+   // synthesis attribute HU_SET of XLXI_4 is "XLXI_4_0"
+   COMP8_HXILINX_dropfifo XLXI_5 (.A(waddr[7:0]), 
+                                  .B(raddr[7:0]), 
+                                  .EQ(XLXN_33));
+   // synthesis attribute HU_SET of XLXI_5 is "XLXI_5_1"
+   COMP8_HXILINX_dropfifo XLXI_6 (.A(raddr[7:0]), 
+                                  .B(XLXN_19[7:0]), 
+                                  .EQ(XLXN_34));
+   // synthesis attribute HU_SET of XLXI_6 is "XLXI_6_2"
+   FD XLXI_9 (.C(clk), 
+              .D(firstword), 
+              .Q(XLXN_41));
+   defparam XLXI_9.INIT = 1'b0;
+   FD XLXI_10 (.C(clk), 
+               .D(lastword), 
+               .Q(XLXN_42));
+   defparam XLXI_10.INIT = 1'b0;
+   FD XLXI_11 (.C(clk), 
+               .D(fifowrite), 
+               .Q(XLXN_50));
+   defparam XLXI_11.INIT = 1'b0;
+   FD XLXI_12 (.C(clk), 
+               .D(drop_pkt), 
+               .Q(XLXN_49));
+   defparam XLXI_12.INIT = 1'b0;
+   dual9Bmem XLXI_31 (.addra(waddr[7:0]), 
+                      .addrb(raddr[7:0]), 
+                      .clka(clk), 
+                      .clkb(clk), 
+                      .dina(in_fifo0[71:0]), 
+                      .wea(XLXN_50), 
+                      .doutb(out_fifo[71:0]));
+   AND3B2 XLXI_39 (.I0(XLXN_34), 
+                   .I1(XLXN_33), 
+                   .I2(fiforead), 
+                   .O(XLXN_38));
+   OR2 XLXI_40 (.I0(XLXN_42), 
+                .I1(XLXN_41), 
+                .O(XLXN_43));
+   AND2B1 XLXI_41 (.I0(XLXN_49), 
+                   .I1(XLXN_43), 
+                   .O(XLXN_44));
+   FDC XLXI_42 (.C(clk), 
+                .CLR(rst), 
+                .D(XLXN_38), 
+                .Q(valid_data));
+   defparam XLXI_42.INIT = 1'b0;
+   VCC XLXI_43 (.P(XLXN_60));
+endmodule
